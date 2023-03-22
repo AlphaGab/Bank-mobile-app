@@ -9,7 +9,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
     companion object{
         private val DATABASE_VERSION = 1
         private val DATABASE_NAME = "BankDatabase"
-        private val TABLE_NAME = "AccountsTable"
+        private val TABLE_USERS = "Users"
         private val KEY_ID = "id"
         private val KEY_FIRST = "First_Name"
         private val KEY_LAST = "Last_Name"
@@ -17,18 +17,49 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         private val KEY_PASSWORD = "Password"
         private val KEY_ADDRESS = "Address"
 
+        const val KEY_ACCOUNT_ID = "account_id"
+        const val KEY_BALANCE = "Balance"
+        const val KEY_DATE = "date"
+        private  const val TABLE_TRANSACTIONS = "Account"
 
+        @Volatile
+        private var INSTANCE: DatabaseHelper? = null
+
+        fun getInstance(context: Context): DatabaseHelper {
+            synchronized(this) {
+                var instance = INSTANCE
+                if (instance == null) {
+                    instance = DatabaseHelper(context.applicationContext)
+                    INSTANCE = instance
+                }
+                return INSTANCE!!
+
+
+            }
+        }
     }
 
+
+
     override fun onCreate(db: SQLiteDatabase?) {
-        val createTable = "CREATE TABLE $TABLE_NAME ($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT,$KEY_FIRST TEXT,$KEY_LAST TEXT,$KEY_EMAIL TEXT,$KEY_PASSWORD TEXT,$KEY_ADDRESS TEXT)"
+        val createTable = "CREATE TABLE $TABLE_USERS ($KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT,$KEY_FIRST TEXT,$KEY_LAST TEXT,$KEY_EMAIL TEXT,$KEY_PASSWORD TEXT,$KEY_ADDRESS TEXT)"
         db?.execSQL(createTable)
+
+        db?.execSQL("""
+        CREATE TABLE $TABLE_TRANSACTIONS (
+            $KEY_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            $KEY_ACCOUNT_ID INTEGER,
+            $KEY_BALANCE Double,
+            $KEY_DATE TEXT,
+            FOREIGN KEY($KEY_ACCOUNT_ID) REFERENCES $TABLE_USERS($KEY_ID)
+        )
+    """.trimIndent())
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
 
     }
-    fun addOne(accountModel : AccountModel):Boolean{
+    fun addOne(accountModel : UserModel):Boolean{
         val db = this.writableDatabase
         val cv = ContentValues()
         cv.put(KEY_FIRST,accountModel.firstname)
@@ -36,9 +67,14 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         cv.put(KEY_ADDRESS,accountModel.address)
         cv.put(KEY_EMAIL,accountModel.email)
         cv.put(KEY_PASSWORD,accountModel.password)
-       val insert = db.insert(TABLE_NAME,null,cv)
+       val insert = db.insert(TABLE_USERS,null,cv)
         val errorValue:Long = -1
-        db.close()
+        // insert a new account for the user
+    val accountCv = ContentValues().apply {
+            put(KEY_ACCOUNT_ID, getUserId(accountModel.email))
+            put(KEY_BALANCE, 1000.0)
+            put(KEY_DATE, "2022-03-18")
+        }
 
         if (insert == errorValue){
             return false
@@ -48,25 +84,31 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
     fun isValidLoginDetails(email:String,password:String):Boolean{
         val db = this.readableDatabase
         var result = false
-        val cursor = db.rawQuery("SELECT * FROM $TABLE_NAME WHERE $KEY_EMAIL = ? AND $KEY_PASSWORD= ? ",
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_USERS WHERE $KEY_EMAIL = ? AND $KEY_PASSWORD= ? ",
             arrayOf(email,password))
         if(cursor.moveToFirst()) {
             result = true
-
         }
-        cursor.close()
-        db.close()
+
         return result;
     }
     fun doesEmailExist(email: String): Boolean{
         val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $TABLE_NAME WHERE $KEY_EMAIL = ? ", arrayOf(email))
-        db.close()
-        cursor.close()
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_USERS WHERE $KEY_EMAIL = ? ", arrayOf(email))
+
         if(cursor.moveToFirst()){
             return true
         }
           return false
+    }
+    fun getUserId(email: String):Int{
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT $KEY_ID FROM $TABLE_USERS WHERE $KEY_EMAIL = ? ", arrayOf(email))
+        var userId: Int? = null
+        if(cursor.moveToFirst()){
+            userId = cursor.getInt(0)
+        }
+        return userId!!
     }
 
 

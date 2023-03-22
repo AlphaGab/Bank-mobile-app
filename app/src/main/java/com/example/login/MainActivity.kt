@@ -3,12 +3,11 @@ package com.example.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import org.w3c.dom.Text
 
 class MainActivity : AppCompatActivity() {
     lateinit var emailText : EditText;
@@ -22,16 +21,19 @@ class MainActivity : AppCompatActivity() {
         passwordText = findViewById(R.id.editTextPassword)
         buttonAdd = findViewById(R.id.button)
         buttonCreateAccount = findViewById<TextView>(R.id.createLink)
-
-        val DatabaseHelper = DatabaseHelper(this)
-        var accountModel:AccountModel
+        val DatabaseHelper = DatabaseHelper.getInstance(this)
+        Toast.makeText(this,"test",Toast.LENGTH_LONG).show()
+        var accountModel:UserModel
 
         buttonAdd.setOnClickListener{
             if(DatabaseHelper.isValidLoginDetails(emailText.text.toString(), passwordText.text.toString())){
                 Toast.makeText(this,"Valid Login",Toast.LENGTH_LONG).show()
+                Log.d("logged In" , "MADRID")
             }
-            else
-                Toast.makeText(this,"Invalid Login",Toast.LENGTH_LONG).show()
+            else {
+                Toast.makeText(this, "Invalid Login", Toast.LENGTH_LONG).show()
+                Log.d("Invalid","Not logged")
+            }
         }
         buttonCreateAccount.setOnClickListener{
             showRegistrationForms()

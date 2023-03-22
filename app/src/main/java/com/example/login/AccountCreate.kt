@@ -23,17 +23,22 @@ class AccountCreate : AppCompatActivity() {
         emailText = findViewById<EditText>(R.id.emailInput)
         passwordText = findViewById<EditText>(R.id.passwordInput)
         val registerButton = findViewById<Button>(R.id.RegisterButton)
-        var accountModel: AccountModel
-        val DatabaseHelper = DatabaseHelper(this)
+
+        var accountModel: UserModel
+        val DatabaseHelper = DatabaseHelper.getInstance(this)
+        val db = DatabaseHelper.writableDatabase
         registerButton.setOnClickListener {
-            accountModel = AccountModel(
+            accountModel = UserModel(
                 firstNameText.text.toString(), lastNameText.text.toString(),
                 addressText.text.toString(), emailText.text.toString(), passwordText.text.toString()
             )
             if(DatabaseHelper.doesEmailExist(emailText.text.toString())) {
                 Toast.makeText(this,"Email Existing",Toast.LENGTH_SHORT).show()
             }
-            val success = DatabaseHelper.addOne(accountModel)
+            else {
+                val success = DatabaseHelper.addOne(accountModel)
+                finish()
+            }
         }
     }
 

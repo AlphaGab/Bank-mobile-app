@@ -127,6 +127,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Register"
+        android:backgroundTint="#007FFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.687"
         app:layout_constraintStart_toStartOf="parent"
