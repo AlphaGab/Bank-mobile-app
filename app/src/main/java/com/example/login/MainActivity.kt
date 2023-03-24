@@ -1,5 +1,6 @@
 package com.example.login
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +9,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintSet
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var emailText : EditText;
@@ -16,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var buttonCreateAccount : TextView
     lateinit var  actualEmail :String
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -23,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         passwordText = findViewById(R.id.editTextPassword)
         buttonAdd = findViewById(R.id.button)
         buttonCreateAccount = findViewById<TextView>(R.id.createLink)
+
         val DatabaseHelper = DatabaseHelper.getInstance(this)
         Toast.makeText(this,"test",Toast.LENGTH_LONG).show()
         var accountModel:UserModel
@@ -30,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         buttonAdd.setOnClickListener{
             actualEmail = emailText.text.toString()
+
             if(DatabaseHelper.isValidLoginDetails(actualEmail, passwordText.text.toString())){
                 Toast.makeText(this,"Valid Login",Toast.LENGTH_LONG).show()
                 Log.d("logged In" , "MADRID")
@@ -47,6 +53,11 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+    private fun setConstraintSet(newConstraints: ConstraintSet) {
+
+    }
+
     fun showRegistrationForms(){
         val intent = Intent(this,AccountCreate::class.java)
         startActivity(intent)
@@ -58,4 +69,6 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("Email",actualEmail)
         startActivity(intent)
     }
+
+
 }
