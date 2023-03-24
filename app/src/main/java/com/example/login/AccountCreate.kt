@@ -14,6 +14,7 @@ class AccountCreate : AppCompatActivity() {
     lateinit var addressText:EditText
     lateinit var emailText:EditText
     lateinit var passwordText:EditText
+    lateinit var backButton :Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.creatingaccountdesign)
@@ -22,6 +23,7 @@ class AccountCreate : AppCompatActivity() {
         addressText = findViewById<EditText>(R.id.addressInput)
         emailText = findViewById<EditText>(R.id.emailInput)
         passwordText = findViewById<EditText>(R.id.passwordInput)
+        backButton = findViewById<Button>(R.id.backButton)
         val registerButton = findViewById<Button>(R.id.RegisterButton)
 
         var accountModel: UserModel
@@ -39,6 +41,9 @@ class AccountCreate : AppCompatActivity() {
                 val success = DatabaseHelper.addOne(accountModel)
                 finish()
             }
+        }
+        backButton.setOnClickListener{
+            finish()
         }
     }
 

@@ -1,9 +1,13 @@
 package com.example.login
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import androidx.core.database.getStringOrNull
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,null,DATABASE_VERSION)  {
     companion object{
@@ -62,6 +66,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
     fun addOne(accountModel : UserModel):Boolean{
         val db = this.writableDatabase
         val cv = ContentValues()
+        val date: String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         cv.put(KEY_FIRST,accountModel.firstname)
         cv.put(KEY_LAST,accountModel.lastname)
         cv.put(KEY_ADDRESS,accountModel.address)
@@ -69,12 +74,14 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         cv.put(KEY_PASSWORD,accountModel.password)
        val insert = db.insert(TABLE_USERS,null,cv)
         val errorValue:Long = -1
+
         // insert a new account for the user
     val accountCv = ContentValues().apply {
             put(KEY_ACCOUNT_ID, getUserId(accountModel.email))
-            put(KEY_BALANCE, 1000.0)
-            put(KEY_DATE, "2022-03-18")
+            put(KEY_BALANCE, 100)
+            put(KEY_DATE, date)
         }
+        val insertAccount = db.insert(TABLE_TRANSACTIONS,null,accountCv)
 
         if (insert == errorValue){
             return false
@@ -101,7 +108,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         }
           return false
     }
-    fun getUserId(email: String):Int{
+    fun getUserId(email: String?):Int{
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT $KEY_ID FROM $TABLE_USERS WHERE $KEY_EMAIL = ? ", arrayOf(email))
         var userId: Int? = null
@@ -110,6 +117,31 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         }
         return userId!!
     }
+
+    fun getWholeName(userId : Int):String{
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT $KEY_FIRST, $KEY_LAST FROM $TABLE_USERS WHERE $KEY_ID = ? ", arrayOf(userId.toString()))
+        var wholeName = ""
+        if(cursor.moveToFirst()){
+            val firstName = cursor.getStringOrNull(cursor.getColumnIndex(KEY_FIRST))
+            val lastName  = cursor.getStringOrNull(cursor.getColumnIndex(KEY_LAST))
+            wholeName = "$firstName $lastName"
+        }
+        return wholeName
+    }
+    fun getBalance(email: String?): Int{
+        val userId = getUserId(email)
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT $KEY_BALANCE FROM $TABLE_TRANSACTIONS WHERE $KEY_ACCOUNT_ID = ? ",
+            arrayOf(userId.toString()))
+        if(cursor.moveToFirst()){
+            var balance = cursor.getInt(0)
+            return balance
+        }
+        return 0
+
+    }
+
 
 
 

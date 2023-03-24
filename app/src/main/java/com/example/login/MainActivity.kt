@@ -14,6 +14,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var passwordText: EditText
     lateinit var buttonAdd :Button
     lateinit var buttonCreateAccount : TextView
+    lateinit var  actualEmail :String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -25,10 +27,14 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this,"test",Toast.LENGTH_LONG).show()
         var accountModel:UserModel
 
+
         buttonAdd.setOnClickListener{
-            if(DatabaseHelper.isValidLoginDetails(emailText.text.toString(), passwordText.text.toString())){
+            actualEmail = emailText.text.toString()
+            if(DatabaseHelper.isValidLoginDetails(actualEmail, passwordText.text.toString())){
                 Toast.makeText(this,"Valid Login",Toast.LENGTH_LONG).show()
                 Log.d("logged In" , "MADRID")
+                showActivity2()
+
             }
             else {
                 Toast.makeText(this, "Invalid Login", Toast.LENGTH_LONG).show()
@@ -43,6 +49,13 @@ class MainActivity : AppCompatActivity() {
     }
     fun showRegistrationForms(){
         val intent = Intent(this,AccountCreate::class.java)
+        startActivity(intent)
+    }
+    fun showActivity2(){
+        val databaseHelper = DatabaseHelper.getInstance(this)
+
+        val intent = Intent(this,MainActivity2::class.java)
+        intent.putExtra("Email",actualEmail)
         startActivity(intent)
     }
 }
