@@ -29,11 +29,11 @@ class MainActivity : AppCompatActivity() {
 
 
         buttonAdd.setOnClickListener{
-            actualEmail = emailText.text.toString()
+            actualEmail = emailText.text.toString().lowercase()
             if(DatabaseHelper.isValidLoginDetails(actualEmail, passwordText.text.toString())){
                 Toast.makeText(this,"Valid Login",Toast.LENGTH_LONG).show()
-                Log.d("logged In" , "MADRID")
                 showActivity2()
+
 
             }
             else {
@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
     fun showActivity2(){
-        val databaseHelper = DatabaseHelper.getInstance(this)
 
         val intent = Intent(this,MainActivity2::class.java)
         intent.putExtra("Email",actualEmail)

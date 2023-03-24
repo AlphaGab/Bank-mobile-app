@@ -31,8 +31,8 @@ class AccountCreate : AppCompatActivity() {
         val db = DatabaseHelper.writableDatabase
         registerButton.setOnClickListener {
             accountModel = UserModel(
-                firstNameText.text.toString(), lastNameText.text.toString(),
-                addressText.text.toString(), emailText.text.toString(), passwordText.text.toString()
+                firstNameText.text.toString().trim(), lastNameText.text.toString().trim(),
+                addressText.text.toString().trim(), emailText.text.toString().trim(), passwordText.text.toString().trim()
             )
             if(DatabaseHelper.doesEmailExist(emailText.text.toString())) {
                 Toast.makeText(this,"Email Existing",Toast.LENGTH_SHORT).show()

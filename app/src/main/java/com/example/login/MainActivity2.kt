@@ -1,16 +1,11 @@
 package com.example.login
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.ImageButton
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 
 class MainActivity2 : AppCompatActivity(), AddMoneyDialog.AddMoneyDialogListener {
     var finalAmount:Double = 0.0
@@ -23,6 +18,8 @@ class MainActivity2 : AppCompatActivity(), AddMoneyDialog.AddMoneyDialogListener
         balancePlaceholder = findViewById<TextView>(R.id.amountPlaceHolder)
         val databaseHelper = DatabaseHelper.getInstance(this)
         val addButton = findViewById<ImageView>(R.id.addMoneyButton)
+        val logoutButton = findViewById<Button>(R.id.Logout)
+        val sendMoney = findViewById<ImageView>(R.id.sendMoneyButton)
         val wholeName = databaseHelper.getWholeName(databaseHelper.getUserId(intent.getStringExtra("Email")))
         namePlaceholder.text=wholeName
         val actualBalance = databaseHelper.getBalance(intent.getStringExtra("Email"))
@@ -33,9 +30,14 @@ class MainActivity2 : AppCompatActivity(), AddMoneyDialog.AddMoneyDialogListener
         addButton.setOnClickListener{
             addMoneyDialog.show(supportFragmentManager,"Dialog")
 
-
-
         }
+        sendMoney.setOnClickListener{
+           showSendMoneyActivity()
+        }
+        logoutButton.setOnClickListener{
+            finish()
+        }
+
         balancePlaceholder.text = finalAmount.toString()
       
     }
@@ -46,6 +48,22 @@ class MainActivity2 : AppCompatActivity(), AddMoneyDialog.AddMoneyDialogListener
         balancePlaceholder.text = finalAmount.toString()
         val userId = databaseHelper.getUserId(intent.getStringExtra("Email"))
         databaseHelper.addMoney(amount,userId)
+
+    }
+    fun showSendMoneyActivity(){
+        val intents = Intent(this,SendMoney::class.java)
+        intents.putExtra("Email",intent.getStringExtra("Email"))
+        startActivity(intents)
+    }
+    override fun onPause() {
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val databaseHelper = DatabaseHelper.getInstance(this)
+        val actualBalance = databaseHelper.getBalance(intent.getStringExtra("Email"))
+        balancePlaceholder.text = actualBalance.toString()
     }
 
 

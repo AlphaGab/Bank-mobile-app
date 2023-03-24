@@ -1,10 +1,10 @@
 package com.example.login
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import androidx.core.database.getStringOrNull
 import java.text.SimpleDateFormat
 import java.util.*
@@ -32,7 +32,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
-                    instance = DatabaseHelper(context.applicationContext)
+                    instance = DatabaseHelper(context)
                     INSTANCE = instance
                 }
                 return INSTANCE!!
@@ -100,7 +100,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
     }
     fun doesEmailExist(email: String): Boolean{
         val db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $TABLE_USERS WHERE $KEY_EMAIL = ? ", arrayOf(email))
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_USERS WHERE LOWER($KEY_EMAIL) = LOWER(?) ", arrayOf(email))
 
         if(cursor.moveToFirst()){
             return true
@@ -110,11 +110,12 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
     fun getUserId(email: String?):Int{
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT $KEY_ID FROM $TABLE_USERS WHERE $KEY_EMAIL = ? ", arrayOf(email))
-        var userId: Int? = null
+        var userId = 0;
         if(cursor.moveToFirst()){
+            Log.d("GETUSERID", "FUNCTION")
             userId = cursor.getInt(0)
         }
-        return userId!!
+        return userId
     }
 
     fun getWholeName(userId : Int):String{
@@ -146,9 +147,59 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         val updateMoneyQuery = "UPDATE $TABLE_TRANSACTIONS SET $KEY_BALANCE = $KEY_BALANCE + ${amount} WHERE $KEY_ACCOUNT_ID = ${id};"
         db.execSQL(updateMoneyQuery)
 
-        db.close()
+
+        Log.d("Added money","ADDED")
 
     }
+    fun sendMoney(amount: Double,id : Int,email: String?):Unit{
+        val isIdValid = isIdValid(id)
+        if(isIdValid){
+           Log.d("Valid", "VALID ID")
+              addMoney(amount,id)
+              subtractMoney(amount,email)
+
+        }
+    }
+    fun isIdValid(id: Int): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT $KEY_ACCOUNT_ID FROM $TABLE_TRANSACTIONS WHERE $KEY_ACCOUNT_ID = ? ",
+            arrayOf(id.toString())
+        )
+        return cursor.moveToFirst()
+    }
+    fun isMoneyEnough(email: String,amount: Double):Boolean{
+        Log.d("ismoneyEnoug", "FUNCTION")
+        val balance = getBalance(email)
+         if(balance >= amount){
+             return true
+             Log.d("ismoneyEnoug", "True")
+
+        }
+            return false
+    }
+    fun getUserEmail(id:Int):String{
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT $KEY_EMAIL FROM $TABLE_USERS WHERE $KEY_ID = ? ", arrayOf(id.toString()))
+        if(cursor.moveToFirst()){
+            val email = cursor.getString(0)
+            Log.d("EMAIL ","EMAIL GOT")
+            return email
+        }
+        return "Email Unidentified"
+
+
+    }
+    fun subtractMoney(amount: Double,email: String?){
+
+        val db = this.writableDatabase
+        val id = getUserId(email)
+        val updateMoneyQuery = "UPDATE $TABLE_TRANSACTIONS SET $KEY_BALANCE = $KEY_BALANCE - $amount WHERE $KEY_ACCOUNT_ID = $id;"
+        db.execSQL(updateMoneyQuery)
+        Log.d("Subtracted", "Money Subtracted")
+        db.close()
+    }
+
 
 
 
