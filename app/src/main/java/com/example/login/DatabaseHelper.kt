@@ -20,7 +20,6 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         private val KEY_EMAIL = "email"
         private val KEY_PASSWORD = "Password"
         private val KEY_ADDRESS = "Address"
-
         const val KEY_ACCOUNT_ID = "account_id"
         const val KEY_BALANCE = "Balance"
         const val KEY_DATE = "date"
@@ -139,6 +138,15 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
             return balance
         }
         return 0
+
+    }
+    fun addMoney(amount:Double,id:Int){
+        val db = this.writableDatabase
+
+        val updateMoneyQuery = "UPDATE $TABLE_TRANSACTIONS SET $KEY_BALANCE = $KEY_BALANCE + ${amount} WHERE $KEY_ACCOUNT_ID = ${id};"
+        db.execSQL(updateMoneyQuery)
+
+        db.close()
 
     }
 

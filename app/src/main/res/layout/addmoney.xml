@@ -13,6 +13,7 @@
         android:textSize="25dp"
         android:background="#007FFF"/>
     <EditText
+        android:id="@+id/addMoneyEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="22dp"
