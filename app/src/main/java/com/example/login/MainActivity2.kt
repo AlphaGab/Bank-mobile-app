@@ -42,9 +42,9 @@ class MainActivity2 : AppCompatActivity(), AddMoneyDialog.AddMoneyDialogListener
       
     }
 
-    override fun onAddMoney(amount: Double) {
+    override fun onAddMoney(amount: Double?) {
         val databaseHelper = DatabaseHelper.getInstance(this)
-        finalAmount += amount
+        finalAmount += amount!!
         balancePlaceholder.text = finalAmount.toString()
         val userId = databaseHelper.getUserId(intent.getStringExtra("Email"))
         databaseHelper.addMoney(amount,userId)

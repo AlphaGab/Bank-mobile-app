@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 
@@ -20,21 +21,33 @@ class SendMoney : AppCompatActivity() {
          val amountText = findViewById<EditText>(R.id.amountEditText)
          sendButton = findViewById<Button>(R.id.buttonSend)
         val databaseHelper = DatabaseHelper.getInstance(this)
+
         cancelButton = findViewById<Button>(R.id.cancel_button)
-        sendButton.setOnClickListener{
-            if(!areEmpty(amountText,idText)){
-               val amountDouble = amountText.text.toString().toDouble()
-                val id = idText.text.toString().toInt()
-                val intent = intent.getStringExtra("Email")
-                databaseHelper.sendMoney(amountDouble,id,intent)
-
-
-                val idDatabase = databaseHelper.getUserId(intent)
-               Log.d("Intent",intent!!)
-                Log.d("ID OF CURRENT LOGIN",idDatabase.toString())
-                Log.d("ID OF RECIPIENT",id.toString())
-                finish()
+        sendButton.setOnClickListener {
+            val id = idText.text.toString().trim().toIntOrNull()
+            val amount = amountText.text.toString().trim().toDoubleOrNull()
+            val email = intent.getStringExtra("Email")
+            if (id == null) {
+                Toast.makeText(this, "Invalid ID", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
             }
+
+            if (amount == null) {
+                Toast.makeText(this, "Invalid amount", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (!databaseHelper.isIdValid(id)) {
+                Toast.makeText(this, "ID not found", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            if(!databaseHelper.isMoneyEnough(email,amount)){
+                Toast.makeText(this,"Not Enough Money",Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            Toast.makeText(this,"This line was run",Toast.LENGTH_LONG).show()
+            databaseHelper.sendMoney(amount, id, email)
+            finish()
         }
         cancelButton.setOnClickListener{
             finish()
@@ -43,11 +56,7 @@ class SendMoney : AppCompatActivity() {
         }
     }
 
-fun areEmpty(editText1: EditText, editText2: EditText):Boolean{
-    val amountText = editText1.text.trim()
-    val idText = editText2.text.trim()
-    return amountText.isEmpty() || idText.isEmpty()
-}
+
 
 
 

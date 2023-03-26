@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import android.widget.Toast
 import androidx.core.database.getStringOrNull
 import java.text.SimpleDateFormat
 import java.util.*
@@ -127,7 +128,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
             val lastName  = cursor.getStringOrNull(cursor.getColumnIndex(KEY_LAST))
             wholeName = "$firstName $lastName"
         }
-        return wholeName
+        return wholeName.uppercase()
     }
     fun getBalance(email: String?): Int{
         val userId = getUserId(email)
@@ -141,26 +142,20 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         return 0
 
     }
-    fun addMoney(amount:Double,id:Int){
+    fun addMoney(amount:Double,id:Int?){
         val db = this.writableDatabase
 
         val updateMoneyQuery = "UPDATE $TABLE_TRANSACTIONS SET $KEY_BALANCE = $KEY_BALANCE + ${amount} WHERE $KEY_ACCOUNT_ID = ${id};"
         db.execSQL(updateMoneyQuery)
-
-
         Log.d("Added money","ADDED")
 
     }
-    fun sendMoney(amount: Double,id : Int,email: String?):Unit{
-        val isIdValid = isIdValid(id)
-        if(isIdValid){
-           Log.d("Valid", "VALID ID")
+    fun sendMoney(amount: Double,id : Int?,email: String?):Unit{
               addMoney(amount,id)
               subtractMoney(amount,email)
-
         }
-    }
-    fun isIdValid(id: Int): Boolean {
+
+    fun isIdValid(id: Int?): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
             "SELECT $KEY_ACCOUNT_ID FROM $TABLE_TRANSACTIONS WHERE $KEY_ACCOUNT_ID = ? ",
@@ -168,7 +163,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         )
         return cursor.moveToFirst()
     }
-    fun isMoneyEnough(email: String,amount: Double):Boolean{
+    fun isMoneyEnough(email: String?,amount: Double):Boolean{
         Log.d("ismoneyEnoug", "FUNCTION")
         val balance = getBalance(email)
          if(balance >= amount){

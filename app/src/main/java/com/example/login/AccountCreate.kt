@@ -34,17 +34,45 @@ class AccountCreate : AppCompatActivity() {
                 firstNameText.text.toString().trim(), lastNameText.text.toString().trim(),
                 addressText.text.toString().trim(), emailText.text.toString().trim(), passwordText.text.toString().trim()
             )
+            if(!checkAllFields()){
+                return@setOnClickListener
+            }
             if(DatabaseHelper.doesEmailExist(emailText.text.toString())) {
                 Toast.makeText(this,"Email Existing",Toast.LENGTH_SHORT).show()
             }
             else {
                 val success = DatabaseHelper.addOne(accountModel)
+                Toast.makeText(this,"Succesfully Created an ACCOUNT",Toast.LENGTH_LONG).show()
                 finish()
             }
         }
         backButton.setOnClickListener{
             finish()
         }
+
+    }
+    fun checkAllFields():Boolean{
+        if(firstNameText.text.isBlank()){
+            firstNameText.error = "This Field Is Required"
+            return false
+        }
+        if(lastNameText.text.trim().isEmpty()){
+            lastNameText.error = "This Field Is Required"
+            return false
+        }
+        if(addressText.text.isBlank()){
+            addressText.error = "This Field Is Required"
+            return false
+        }
+        if(emailText.text.isBlank()) {
+            emailText.error = "This Field Is Required"
+            return false
+        }
+        if (passwordText.text.isBlank()){
+            passwordText.error = "This Field Is Required"
+            return false
+        }
+        return true
     }
 
 }

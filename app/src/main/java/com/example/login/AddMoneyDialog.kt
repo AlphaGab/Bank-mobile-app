@@ -7,10 +7,11 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 
 class AddMoneyDialog : DialogFragment(){
-    open var amount: Double = 0.0
+
     private lateinit var listener: AddMoneyDialogListener
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
@@ -19,17 +20,27 @@ class AddMoneyDialog : DialogFragment(){
             val inflater = requireActivity().layoutInflater;
             val view = inflater.inflate(R.layout.addmoney, null)
             val addMoneyEditText = view.findViewById<EditText>(R.id.addMoneyEditText)
-
-
             builder.setView(view)
-
                 .setPositiveButton("Add",
                     DialogInterface.OnClickListener { dialog, id ->
-                      val amountInString = addMoneyEditText.text.toString().trim()
-                        amount = amountInString.toDouble()
-                        listener.onAddMoney(amount)
-                        dialog.cancel()
+                        val amountInString = addMoneyEditText.text.toString().trim()
 
+                        if (amountInString.isEmpty()) {
+                            // The amount is empty
+                            Toast.makeText(requireContext(), "Please enter an amount", Toast.LENGTH_SHORT).show()
+                            return@OnClickListener
+                        }
+
+                        val amount = amountInString.toDoubleOrNull()
+
+                        if (amount == null) {
+                            // The amount is not a valid number
+                            Toast.makeText(requireContext(), "Please enter a valid amount", Toast.LENGTH_SHORT).show()
+                            return@OnClickListener
+                        }else {
+                            listener.onAddMoney(amount)
+                            dialog.dismiss()
+                        }
                     })
                 .setNegativeButton("Cancel",
                     DialogInterface.OnClickListener { dialog, id ->
@@ -39,7 +50,7 @@ class AddMoneyDialog : DialogFragment(){
         } ?: throw IllegalStateException("Activity cannot be null")
     }
     interface AddMoneyDialogListener {
-        fun onAddMoney(amount: Double)
+        fun onAddMoney(amount: Double?)
     }
 
     override fun onAttach(context: Context) {
