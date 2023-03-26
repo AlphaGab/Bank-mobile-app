@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="22dp"
+        android:inputType="number"
         android:layout_marginTop="10dp"
         android:layout_below="@id/addMoneyText"
         android:hint="Amount"/>
