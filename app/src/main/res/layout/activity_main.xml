@@ -70,15 +70,15 @@
 
     <ImageView
         android:id="@+id/imageViewLogo"
-        android:layout_width="411dp"
-        android:layout_height="338dp"
+        android:layout_width="413dp"
+        android:layout_height="259dp"
         android:scaleType="centerCrop"
         android:src="@drawable/mcash"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.04" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/imageViewUser"
@@ -86,24 +86,21 @@
         android:layout_height="29dp"
         android:scaleType="centerCrop"
         android:src="@drawable/user"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.105"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewPass"
+        app:layout_constraintEnd_toStartOf="@+id/editTextEmail"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.407" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewLogo"
+        app:layout_constraintVertical_bias="0.329" />
 
     <ImageView
         android:id="@+id/imageViewPass"
         android:layout_width="24dp"
         android:layout_height="29dp"
+        android:layout_marginTop="92dp"
         android:scaleType="centerCrop"
         android:src="@drawable/padlock"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.105"
+        app:layout_constraintEnd_toStartOf="@+id/editTextPassword"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.482" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
