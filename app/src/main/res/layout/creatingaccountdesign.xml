@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="30dp">
+    android:layout_margin="0dp"
+    android:background="@drawable/background_color_gradient">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="First Name"
+        android:fontFamily="@font/syne"
         app:layout_constraintBottom_toTopOf="@+id/firstNameInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -25,8 +27,8 @@
         android:layout_marginTop="128dp"
         android:ems="10"
         android:inputType="textPersonName"
+        android:fontFamily="@font/syne"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Last Name"
+        android:fontFamily="@font/syne"
         app:layout_constraintBottom_toTopOf="@+id/lastNameInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -47,6 +50,7 @@
         android:layout_marginTop="44dp"
         android:ems="10"
         android:inputType="textPersonName"
+        android:fontFamily="@font/syne"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,6 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:text="Address"
+        android:fontFamily="@font/syne"
         app:layout_constraintBottom_toTopOf="@+id/addressInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -68,6 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email"
+        android:fontFamily="@font/syne"
         app:layout_constraintBottom_toTopOf="@+id/emailInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -80,9 +86,9 @@
         android:layout_marginTop="44dp"
         android:ems="10"
         android:gravity="start|top"
+        android:fontFamily="@font/syne"
         android:inputType="textMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lastNameInput" />
 
@@ -93,8 +99,8 @@
         android:layout_marginTop="44dp"
         android:ems="10"
         android:inputType="textEmailAddress"
+        android:fontFamily="@font/syne"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addressInput" />
@@ -104,6 +110,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Password"
+        android:fontFamily="@font/syne"
         app:layout_constraintBottom_toTopOf="@+id/passwordInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -116,9 +123,9 @@
         android:layout_marginTop="4dp"
         android:ems="10"
         android:inputType="textPassword"
+        android:fontFamily="@font/syne"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailInput"
@@ -130,7 +137,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:backgroundTint="#007FFF"
+        android:textColor="@color/white"
         android:text="Register"
+        android:fontFamily="@font/syne"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordInput" />
 
@@ -140,7 +149,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
+        android:backgroundTint="#007FFF"
+        android:textColor="@color/white"
         android:text="Back"
+        android:fontFamily="@font/syne"
         app:layout_constraintEnd_toStartOf="@+id/RegisterButton"
         app:layout_constraintTop_toBottomOf="@+id/passwordInput" />
 
