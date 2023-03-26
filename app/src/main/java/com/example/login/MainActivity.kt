@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
 
         buttonAdd.setOnClickListener{
-            actualEmail = emailText.text.toString().lowercase()
+            actualEmail = emailText.text.toString().lowercase().trim()
             if(DatabaseHelper.isValidLoginDetails(actualEmail, passwordText.text.toString())){
                 Toast.makeText(this,"Valid Login",Toast.LENGTH_LONG).show()
                 showActivity2()
