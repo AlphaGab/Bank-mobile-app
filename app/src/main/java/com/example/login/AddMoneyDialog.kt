@@ -49,6 +49,7 @@ class AddMoneyDialog : DialogFragment(){
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
+    // this is callback method, provides a connection to the activity and a fragment
     interface AddMoneyDialogListener {
         fun onAddMoney(amount: Double?)
     }

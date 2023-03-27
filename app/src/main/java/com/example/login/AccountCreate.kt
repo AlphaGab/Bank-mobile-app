@@ -51,6 +51,7 @@ class AccountCreate : AppCompatActivity() {
         }
 
     }
+    // check if fields are blank return true if not
     fun checkAllFields():Boolean{
         if(firstNameText.text.isBlank()){
             firstNameText.error = "This Field Is Required"

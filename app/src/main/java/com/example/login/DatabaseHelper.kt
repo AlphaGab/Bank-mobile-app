@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,null,DATABASE_VERSION)  {
+    // This are the objects in the database
     companion object{
         private val DATABASE_VERSION = 1
         private val DATABASE_NAME = "BankDatabase"
@@ -28,7 +29,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
 
         @Volatile
         private var INSTANCE: DatabaseHelper? = null
-
+        // Use database using a single instance
         fun getInstance(context: Context): DatabaseHelper {
             synchronized(this) {
                 var instance = INSTANCE
@@ -61,8 +62,8 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
-
     }
+    // Add an account, with the parameter UserModel
     fun addOne(accountModel : UserModel):Boolean{
         val db = this.writableDatabase
         val cv = ContentValues()
@@ -72,7 +73,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         cv.put(KEY_ADDRESS,accountModel.address)
         cv.put(KEY_EMAIL,accountModel.email)
         cv.put(KEY_PASSWORD,accountModel.password)
-       val insert = db.insert(TABLE_USERS,null,cv)
+        val insert = db.insert(TABLE_USERS,null,cv)
         val errorValue:Long = -1
 
         // insert a new account for the user
@@ -88,6 +89,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         }
             return true
     }
+    //Returns a true if login details exists else false
     fun isValidLoginDetails(email:String,password:String):Boolean{
         val db = this.readableDatabase
         var result = false
@@ -99,6 +101,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
 
         return result;
     }
+    //Check if email Exist
     fun doesEmailExist(email: String): Boolean{
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT * FROM $TABLE_USERS WHERE LOWER($KEY_EMAIL) = LOWER(?) ", arrayOf(email))
@@ -108,6 +111,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         }
           return false
     }
+    //Get user Id via email
     fun getUserId(email: String?):Int{
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT $KEY_ID FROM $TABLE_USERS WHERE $KEY_EMAIL = ? ", arrayOf(email))
@@ -118,7 +122,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         }
         return userId
     }
-
+        //get whole name via user Id
     fun getWholeName(userId : Int):String{
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT $KEY_FIRST, $KEY_LAST FROM $TABLE_USERS WHERE $KEY_ID = ? ", arrayOf(userId.toString()))
@@ -130,6 +134,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         }
         return wholeName.uppercase()
     }
+    //get balance via email
     fun getBalance(email: String?): Int{
         val userId = getUserId(email)
         val db = this.readableDatabase
@@ -142,6 +147,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         return 0
 
     }
+    //add money using the paramater amount and the targeted id
     fun addMoney(amount:Double,id:Int?){
         val db = this.writableDatabase
 
@@ -150,11 +156,13 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         Log.d("Added money","ADDED")
 
     }
+    //send money uses add money and subtract money, adds the money to the receiver and subtracts
+    // on the sender
     fun sendMoney(amount: Double,id : Int?,email: String?):Unit{
               addMoney(amount,id)
               subtractMoney(amount,email)
         }
-
+    // check if id exist
     fun isIdValid(id: Int?): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
@@ -163,8 +171,8 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         )
         return cursor.moveToFirst()
     }
+    // checks if money is enough
     fun isMoneyEnough(email: String?,amount: Double):Boolean{
-        Log.d("ismoneyEnoug", "FUNCTION")
         val balance = getBalance(email)
          if(balance >= amount){
              return true
@@ -173,6 +181,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
         }
             return false
     }
+    // get email using the id
     fun getUserEmail(id:Int):String{
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT $KEY_EMAIL FROM $TABLE_USERS WHERE $KEY_ID = ? ", arrayOf(id.toString()))
@@ -185,8 +194,8 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context,DATABASE_NAME,n
 
 
     }
+    // subtract money based on the email of the current login
     fun subtractMoney(amount: Double,email: String?){
-
         val db = this.writableDatabase
         val id = getUserId(email)
         val updateMoneyQuery = "UPDATE $TABLE_TRANSACTIONS SET $KEY_BALANCE = $KEY_BALANCE - $amount WHERE $KEY_ACCOUNT_ID = $id;"

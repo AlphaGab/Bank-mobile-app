@@ -23,10 +23,12 @@ class SendMoney : AppCompatActivity() {
         val databaseHelper = DatabaseHelper.getInstance(this)
 
         cancelButton = findViewById<Button>(R.id.cancel_button)
+
         sendButton.setOnClickListener {
             val id = idText.text.toString().trim().toIntOrNull()
             val amount = amountText.text.toString().trim().toDoubleOrNull()
             val email = intent.getStringExtra("Email")
+            //checks the input if valid or not
             if (id == null) {
                 Toast.makeText(this, "Invalid ID", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
@@ -45,9 +47,11 @@ class SendMoney : AppCompatActivity() {
                 Toast.makeText(this,"Not Enough Money",Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
+            //sends money if everything is false
             databaseHelper.sendMoney(amount, id, email)
             finish()
         }
+        // finish if cancel is clicked
         cancelButton.setOnClickListener{
             finish()
         }

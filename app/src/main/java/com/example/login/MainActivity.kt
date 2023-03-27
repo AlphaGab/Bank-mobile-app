@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var buttonCreateAccount : TextView
     lateinit var  actualEmail :String
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -29,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         buttonCreateAccount = findViewById<TextView>(R.id.createLink)
 
         val DatabaseHelper = DatabaseHelper.getInstance(this)
-        Toast.makeText(this,"test",Toast.LENGTH_LONG).show()
         var accountModel:UserModel
 
 
@@ -56,11 +54,12 @@ class MainActivity : AppCompatActivity() {
     private fun setConstraintSet(newConstraints: ConstraintSet) {
 
     }
-
+    // This shows the registration form using Intent
     fun showRegistrationForms(){
         val intent = Intent(this,AccountCreate::class.java)
         startActivity(intent)
     }
+    // This shows the activity 2
     fun showActivity2(){
 
         val intent = Intent(this,MainActivity2::class.java)
