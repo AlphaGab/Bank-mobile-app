@@ -45,7 +45,6 @@ class SendMoney : AppCompatActivity() {
                 Toast.makeText(this,"Not Enough Money",Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            Toast.makeText(this,"This line was run",Toast.LENGTH_LONG).show()
             databaseHelper.sendMoney(amount, id, email)
             finish()
         }
