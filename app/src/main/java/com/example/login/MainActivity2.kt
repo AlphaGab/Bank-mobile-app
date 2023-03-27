@@ -13,15 +13,18 @@ class MainActivity2 : AppCompatActivity(), AddMoneyDialog.AddMoneyDialogListener
     lateinit var balancePlaceholder: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.bank_interface)
+        setContentView(R.layout.bankinterface)
         val namePlaceholder = findViewById<TextView>(R.id.namePlaceHolder)
         balancePlaceholder = findViewById<TextView>(R.id.amountPlaceHolder)
         val databaseHelper = DatabaseHelper.getInstance(this)
         val addButton = findViewById<ImageView>(R.id.addMoneyButton)
-        val logoutButton = findViewById<Button>(R.id.Logout)
+        val logoutButton = findViewById<ImageView>(R.id.Logout)
+        val idPlaceholder = findViewById<TextView>(R.id.accountNumberPlaceHolder)
+
         val sendMoney = findViewById<ImageView>(R.id.sendMoneyButton)
         val wholeName = databaseHelper.getWholeName(databaseHelper.getUserId(intent.getStringExtra("Email")))
         namePlaceholder.text=wholeName
+        idPlaceholder.text = databaseHelper.getUserId(intent.getStringExtra("Email")).toString()
         val actualBalance = databaseHelper.getBalance(intent.getStringExtra("Email"))
 
         val addMoneyDialog = AddMoneyDialog()
@@ -61,7 +64,7 @@ class MainActivity2 : AppCompatActivity(), AddMoneyDialog.AddMoneyDialogListener
 
     override fun onResume() {
         super.onResume()
-        val databaseHelper = DatabaseHelper.getInstance(this)
+        val databaseHelper = DatabaseHelper.getInstance( this)
         val actualBalance = databaseHelper.getBalance(intent.getStringExtra("Email"))
         balancePlaceholder.text = actualBalance.toString()
     }
